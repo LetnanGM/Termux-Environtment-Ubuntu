@@ -5,11 +5,11 @@ this TEU like ubuntu and can run or execute very like ubuntu
 This version TEU is ubuntu 18.04
 
 Ubuntu chroot for termux powered by :
- Neo-oli
- Andronix from Techriz
- proot
+ 1. Neo-oli
+ 2. Andronix from Techriz
+ 3. proot
 
- and me, Recoded hehe
+and me, Recoded hehe
 
 how to Install and setup?
 follow me :
