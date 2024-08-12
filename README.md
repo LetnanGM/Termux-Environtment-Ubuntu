@@ -13,7 +13,7 @@ Ubuntu chroot for termux powered by :
 
 how to Install and setup?
 follow me :
-'''python
+```python
 apt update && apt upgrade
 apt install git
 
@@ -22,7 +22,7 @@ mv Termux-Environtment-Ubuntu TEU
 cd TEU
 chmod 700 ./ubuntu.sh
 ./ubuntu.sh
-'''
+```
 
 Thankyou Very Much ❤
 give me stars!!
