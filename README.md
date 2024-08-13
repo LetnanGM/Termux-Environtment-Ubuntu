@@ -4,9 +4,10 @@ TEU (Termux Environment Ubuntu) adalah proyek yang memungkinkan pengguna untuk m
 
 ## Fitur Utama
 
-- **Ubuntu 19.04**: Jalankan distribusi Ubuntu penuh di perangkat Android Anda.
+- **Ubuntu 19.04**: Jalankan distribusi Ubuntu terbaru di perangkat Android Anda.
 - **Chroot dan proot**: Teknologi untuk menjalankan lingkungan terisolasi tanpa memerlukan root.
 - **Mudah diinstal**: Cukup dengan beberapa langkah sederhana, Anda sudah bisa menjalankan Ubuntu di Termux.
+- **Login Sederhana**: Akses lingkungan Ubuntu melalui perintah `login --ubuntu` tanpa perlu mengeksekusi bash secara manual.
 
 ## Persyaratan Sistem
 
@@ -52,7 +53,7 @@ Ikuti langkah-langkah berikut untuk menginstal dan mengatur TEU:
 7. **Mulai Ubuntu:**
    Setelah instalasi selesai, Anda dapat memulai lingkungan Ubuntu dengan perintah berikut:
     ```bash
-    ./start-ubuntu.sh
+    login --ubuntu
     ```
 
 ## Kredit dan Terima Kasih
