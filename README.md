@@ -1,10 +1,10 @@
 # TEU: Termux Environment Ubuntu
 
-TEU (Termux Environment Ubuntu) adalah proyek yang memungkinkan pengguna untuk menjalankan Ubuntu 18.04 di dalam Termux menggunakan chroot, memberikan pengalaman yang sangat mirip dengan menjalankan Ubuntu di perangkat Android. Proyek ini menggabungkan beberapa teknologi seperti proot, chroot, dan skrip dari proyek-proyek lain.
+TEU (Termux Environment Ubuntu) adalah proyek yang memungkinkan pengguna untuk menjalankan Ubuntu 19.04 di dalam Termux menggunakan chroot, memberikan pengalaman yang sangat mirip dengan menjalankan Ubuntu di perangkat Android. Proyek ini menggabungkan beberapa teknologi seperti proot, chroot, dan skrip dari proyek-proyek lain.
 
 ## Fitur Utama
 
-- **Ubuntu 18.04**: Jalankan distribusi Ubuntu penuh di perangkat Android Anda.
+- **Ubuntu 19.04**: Jalankan distribusi Ubuntu penuh di perangkat Android Anda.
 - **Chroot dan proot**: Teknologi untuk menjalankan lingkungan terisolasi tanpa memerlukan root.
 - **Mudah diinstal**: Cukup dengan beberapa langkah sederhana, Anda sudah bisa menjalankan Ubuntu di Termux.
 
@@ -59,7 +59,7 @@ Ikuti langkah-langkah berikut untuk menginstal dan mengatur TEU:
 
 Proyek ini tidak akan mungkin tanpa kontribusi dari proyek-proyek berikut:
 
-- [Neo-Oli](https://github.com/Neo-Oli) untuk skrip dasar Termux Ubuntu.
+- [Neo-Oli](https://github.com/Neo-Oli/termux-ubuntu) untuk skrip dasar Termux Ubuntu.
 - [Andronix dari Techriz](https://github.com/Techriz/Andronix) untuk kontribusi pada chroot dan manajemen lingkungan di Android.
 - [proot](https://proot-me.github.io/) untuk menyediakan teknologi yang memungkinkan lingkungan terisolasi berjalan tanpa akses root.
 
