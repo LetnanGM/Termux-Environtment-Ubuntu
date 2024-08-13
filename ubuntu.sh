@@ -50,7 +50,7 @@ fi
 mkdir -p binds
 
 # Script to start Ubuntu
-launch_script=start-my-ubuntu.sh
+launch_script=start-ubuntu.sh
 
 echo "Creating launch script..."
 cat > $launch_script <<- EOM
@@ -93,4 +93,4 @@ termux-fix-shebang $launch_script
 echo "Making $launch_script executable..."
 chmod +x $launch_script
 
-echo "Ubuntu is ready! Launch it with ./$launch_script"
+echo "You can now log in to Ubuntu with 'login --ubuntu' command or start it using ./$launch_script"
