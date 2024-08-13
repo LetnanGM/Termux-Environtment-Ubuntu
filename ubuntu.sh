@@ -1,92 +1,96 @@
 #!/data/data/com.termux/files/usr/bin/bash
-echo "installing package! need that for TEU"
-pkg install proot -y
-pkg install wget -y 
-pkg install figlet -y
-clear
-folder=ubuntu-fs
-if [ -d "$folder" ]; then
-	first=1
-	echo "skipping downloading"
+# Folder where Ubuntu filesystem will be extracted
+ubuntu_dir=ubuntu-fs
+
+# Check if the folder already exists
+if [ -d "$ubuntu_dir" ]; then
+    skip_download=true
+    echo "Ubuntu filesystem already exists, skipping download."
 fi
-tarball="ubuntu-rootfs.tar.xz"
-if [ "$first" != 1 ];then
-	if [ ! -f $tarball ]; then
-		echo "Download Rootfs, this may take a while base on your internet speed."
-		case `dpkg --print-architecture` in
-		aarch64)
-			archurl="arm64" ;;
-		arm)
-			archurl="armhf" ;;
-		amd64)
-			archurl="amd64" ;;
-		x86_64)
-			archurl="amd64" ;;	
-		i*86)
-			archurl="i386" ;;
-		x86)
-			archurl="i386" ;;
-		*)
-			echo "unknown architecture"; exit 1 ;;
-		esac
-		wget "https://github.com/Techriz/AndronixOrigin/blob/master/Rootfs/Ubuntu/${archurl}/ubuntu-rootfs-${archurl}.tar.xz?raw=true" -O $tarball
+
+# Tarball file name
+tarball="ubuntu.tar.gz"
+
+# If download is not skipped, proceed to download and extract
+if [ "$skip_download" != true ]; then
+    # Check if the tarball already exists
+    if [ ! -f $tarball ]; then
+        echo "Starting download of Ubuntu image..."
+        case `dpkg --print-architecture` in
+            aarch64)
+                arch="arm64" ;;
+            arm)
+                arch="armhf" ;;
+            amd64)
+                arch="amd64" ;;
+            i*86)
+                arch="i386" ;;
+            x86_64)
+                arch="amd64" ;;
+            *)
+                echo "Architecture not recognized, exiting."; exit 1 ;;
+        esac
+        wget "https://partner-images.canonical.com/core/disco/current/ubuntu-disco-core-cloudimg-${arch}-root.tar.gz" -O $tarball
+    fi
+
+    current_dir=`pwd`
+    mkdir -p "$ubuntu_dir"
+    cd "$ubuntu_dir"
+
+    echo "Extracting Ubuntu image..."
+    proot --link2symlink tar -xf ${current_dir}/${tarball} --exclude='dev' ||:
+
+    echo "Configuring nameserver for internet connectivity..."
+    echo "nameserver 1.1.1.1" > etc/resolv.conf
+
+    cd "$current_dir"
 fi
-	cur=`pwd`
-	mkdir -p "$folder"
-	cd "$folder"
-	echo "Decompressing Rootfs, please be patient."
-	proot --link2symlink tar -xJf ${cur}/${tarball}||:
-	cd "$cur"
-fi
-mkdir -p ubuntu-binds
-bin=start-ubuntu.sh
-echo "writing launch script"
-cat > $bin <<- EOM
+
+# Directory for bind mounts
+mkdir -p binds
+
+# Script to start Ubuntu
+launch_script=start-my-ubuntu.sh
+
+echo "Creating launch script..."
+cat > $launch_script <<- EOM
 #!/bin/bash
 cd \$(dirname \$0)
-## unset LD_PRELOAD in case termux-exec is installed
+## Unset LD_PRELOAD to avoid issues with termux-exec
 unset LD_PRELOAD
-command="proot"
-command+=" --link2symlink"
-command+=" -0"
-command+=" -r $folder"
-if [ -n "\$(ls -A ubuntu-binds)" ]; then
-    for f in ubuntu-binds/* ;do
-      . \$f
+cmd="proot"
+cmd+=" --link2symlink"
+cmd+=" -0"
+cmd+=" -r $ubuntu_dir"
+if [ -n "\$(ls -A binds)" ]; then
+    for file in binds/* ;do
+      . \$file
     done
 fi
-command+=" -b /dev"
-command+=" -b /proc"
-command+=" -b ubuntu-fs/root:/dev/shm"
-## uncomment the following line to have access to the home directory of termux
-#command+=" -b /data/data/com.termux/files/home:/root"
-## uncomment the following line to mount /sdcard directly to / 
-#command+=" -b /sdcard"
-command+=" -w /root"
-command+=" /usr/bin/env -i"
-command+=" HOME=/root"
-command+=" PATH=/usr/local/sbin:/usr/local/bin:/bin:/usr/bin:/sbin:/usr/sbin:/usr/games:/usr/local/games"
-command+=" TERM=\$TERM"
-command+=" LANG=C.UTF-8"
-command+=" /bin/bash --login"
-com="\$@"
-if [ -z "\$1" ];then
-    exec \$command
+cmd+=" -b /dev"
+cmd+=" -b /proc"
+## Uncomment to access Termux home directory inside Ubuntu
+#cmd+=" -b /data/data/com.termux/files/home:/root"
+## Uncomment to mount SD card directly to root
+#cmd+=" -b /sdcard"
+cmd+=" -w /root"
+cmd+=" /usr/bin/env -i"
+cmd+=" HOME=/root"
+cmd+=" PATH=/usr/local/sbin:/usr/local/bin:/bin:/usr/bin:/sbin:/usr/sbin:/usr/games:/usr/local/games"
+cmd+=" TERM=\$TERM"
+cmd+=" LANG=C.UTF-8"
+cmd+=" /bin/bash --login"
+if [ -z "\$1" ]; then
+    exec \$cmd
 else
-    \$command -c "\$com"
+    \$cmd -c "\$@"
 fi
 EOM
 
-echo "fixing shebang of $bin"
-termux-fix-shebang $bin
-echo "making $bin executable"
-chmod +x $bin
-echo "removing image for some space"
-rm $tarball
-wget "https://github.com/LetnanGM/TermuxUbuntuEnvirontment/LetnanGM/bashrc.py"
-echo "You can now launch Ubuntu with the ./${bin} script"
-echo "Decoded by LetnanGM and Powered by Andronix, proot, Neo-oli"
-echo "my Github LetnanGM : https://github.com/LetnanGM"
-echo "Neo-oli github : https://github.com/Neo-Oli"
-echo "Andronix github : https://github.com/Techriz/Andronix"
-echo "Give stars github in above!, Thank you very much!!"
+echo "Updating shebang for $launch_script..."
+termux-fix-shebang $launch_script
+
+echo "Making $launch_script executable..."
+chmod +x $launch_script
+
+echo "Ubuntu is ready! Launch it with ./$launch_script"
